@@ -462,7 +462,7 @@ create_model(XGBClassifier(random_state = 0), X_train_smote, X_test_final, y_tra
 #%%-----------------------------------------------------------------------
 #%%-----------------------------------------------------------------------
 
-## Conclusion:
+## Conclusion 1:
 
 #The train and test ROC looks pretty good. The  score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad. 
 
@@ -470,7 +470,7 @@ create_model(XGBClassifier(random_state = 0), X_train_smote, X_test_final, y_tra
 
 #%%-----------------------------------------------------------------------
 
-
+# Backward stepwise Method:
 
 
 
