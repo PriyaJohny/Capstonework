@@ -1,2 +1,2 @@
-# capstonework
+# Capstonework
 Stroke Prediction
