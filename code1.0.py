@@ -60,6 +60,4 @@ unloadPkg = function(pkg, character.only = FALSE) {
 
 
 
-## References
-
-Stroke Prediction Dataset: Data file Retrieved from https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
+## References: Stroke Prediction Dataset: Data file Retrieved from https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
