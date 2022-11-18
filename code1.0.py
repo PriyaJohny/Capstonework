@@ -108,7 +108,8 @@ df.isnull().sum()
 #%%-----------------------------------------------------------------------
 # Lets check the distribution of bmi column
 
-sns.histplot(df["bmi"], kde = True);
+ax = sns.histplot(df["bmi"], kde = True,color='teal',edgecolor='black');
+ax.lines[0].set_color('crimson');
 plt.title("BMI Distrbution");
 
 #The peak lies around 30.
@@ -133,55 +134,55 @@ df['bmi'] = df.groupby(['gender'])['bmi'].transform(
 # No null value exists in our data now
 df.isnull().sum()
 #%%-----------------------------------------------------------------------
-sns.countplot(x=df["gender"])
+sns.countplot(x=df["gender"],color='teal'  ,edgecolor='black')
 plt.title("Gender Vs Frequency count");
 #%%-----------------------------------------------------------------------
 
-sns.countplot(x=df["ever_married"])
+sns.countplot(x=df["ever_married"],color='tab:olive'  ,edgecolor='black')
 plt.title("Married Vs Frequency count");
 
 # Married people nearly twice then unmarried people.
 
 #%%-----------------------------------------------------------------------
-sns.countplot(x=df["hypertension"])
+sns.countplot(x=df["hypertension"],color='tab:orange'  ,edgecolor='black')
 plt.title("Hypertension Vs Frequency count");
 
 #People having no hypertension is a lot more than the other class.
 
 #%%-----------------------------------------------------------------------
 
-sns.countplot(x=df["heart_disease"])
+sns.countplot(x=df["heart_disease"],color='yellow' ,edgecolor='black')
 plt.title("Heart Disease Vs Frequency count");
 
 #%%-----------------------------------------------------------------------
 
-sns.countplot(x=df["work_type"])
+sns.countplot(x=df["work_type"],edgecolor='black')
 plt.title("Type Of Work Vs Frequency count");
 
 
 #%%-----------------------------------------------------------------------
-sns.countplot(x=df["Residence_type"])
+sns.countplot(x=df["Residence_type"],color='tab:blue',edgecolor='black')
 plt.title("Type Of Residence Vs Frequency count");
 
 
 #%%-----------------------------------------------------------------------
 
-sns.countplot(x=df["smoking_status"])
+sns.countplot(x=df["smoking_status"], color='blue', edgecolor='black')
 plt.title("Smoking Status Vs Frequency count");
 
 #%%-----------------------------------------------------------------------
 
 # Lets check the distribution of age column
-sns.histplot(df["avg_glucose_level"], kde = True);
+ax=sns.histplot(df["avg_glucose_level"], kde = True,color='teal',edgecolor='black');
+ax.lines[0].set_color('crimson');
 plt.title("Average Glucose Level Distrbution");
 
 #%%-----------------------------------------------------------------------
 
 # Lets check the distribution of age column
-sns.histplot(df["age"], kde = True);
+ax=sns.histplot(df["age"], kde = True, edgecolor='black');
+ax.lines[0].set_color('crimson');
 plt.title("Age Distrbution");
-
-#%%-----------------------------------------------------------------------
 
 > Age distribution is between approx 0 to approx 80+. 
 
@@ -191,41 +192,42 @@ plt.title("Age Distrbution");
 
 ### People suffering from stroke, do they suffer from hypertension? 
 
-do_a_crosstab("stroke", "hypertension")
-
+#do_a_crosstab("stroke", "hypertension")
+sns.countplot(x=df['stroke'], hue=df['hypertension'],color='maroon',edgecolor='black');
+plt.title("People suffering from stroke, do they suffer from hypertension?");
 # It can be observed people having hypertension suffered less from a heart stroke than those not having hypertension.
 
 #%%-----------------------------------------------------------------------
 
 ### People suffering from stroke, do they have prior heart disease? 
 
-do_a_crosstab("stroke", "heart_disease")
-
-#%%-----------------------------------------------------------------------
+#do_a_crosstab("stroke", "heart_disease")
+sns.countplot(x=df['stroke'], hue=df['heart_disease'],color='green',edgecolor='black');
+plt.title("People suffering from stroke, do they have prior heart disease?");
 
 # It can be observed people having prio heart disease suffered less from a heart stroke than those not having hypertension.
 
 #%%-----------------------------------------------------------------------
 
-
 ###Can work type of a person have impact on heart stroke?
 
-do_a_crosstab("stroke", "work_type")
-
+#do_a_crosstab("stroke", "work_type")
+sns.countplot(x=df['stroke'], hue=df['work_type'],color='red',edgecolor='black');
+plt.title("Can work type of a person have impact on stroke?");
 #Interesting thing to notice here is, "children" and "people who never worked" has almost 0 numbers for a heart stroke. This could mean heart attack is influenced by the type of work of a person.
 
 #%%-----------------------------------------------------------------------
 
 ###What are the smoking patterns for married/unmarried people?
 
-#%%
-
-do_a_crosstab("ever_married", "smoking_status")
+#do_a_crosstab("ever_married", "smoking_status")
+sns.countplot(x=df['ever_married'], hue=df['smoking_status'],color='teal',edgecolor='black');
+plt.title("What are the smoking patterns for married/unmarried people?");
 
 #A large chunk of married people have never smoked.
 
-#%%
-
+#%%-----------------------------------------------------------------------
+## Cramer V Correlation between Categorical Variables
 # Getting out the categorical variables
 categorical_cols = [col for col in df.columns if df[col].dtype == "object"]
 
