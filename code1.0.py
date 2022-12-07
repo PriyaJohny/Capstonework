@@ -228,6 +228,13 @@ plt.title("What are the smoking patterns for married/unmarried people?");
 #A large chunk of married people have never smoked.
 
 #%%-----------------------------------------------------------------------
+#simple correlation with respect to stroke column
+print(corr["stroke"])
+
+sns.pairplot(df,hue='stroke',diag_kws={'bw':0.2} )
+#%%-----------------------------------------------------------------------
+
+
 ## Cramer V Correlation between Categorical Variables
 # Getting out the categorical variables
 categorical_cols = [col for col in df.columns if df[col].dtype == "object"]
