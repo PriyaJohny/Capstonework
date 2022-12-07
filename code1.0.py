@@ -1,5 +1,6 @@
 ---
-title: "Predicting Stroke "
+title: " Stroke Analysis "
+title: " Capstone "
 author: "Priya Johny"
 date: "today"
 
@@ -363,12 +364,116 @@ X_train_smote, y_train_smote = rs.fit_resample(X_train_final, y_train)
 
 print("After balancing the data: ", Counter(y_train_smote))
 
+#%%-----------------------------------------------------------------------
+X_train = X_train_smote
+X_test = X_test_final
+
+y_train = y_train_smote
+y_test = y_test
+#%%-----------------------------------------------------------------------
 #Now the data is prepared and we can move to training the model.
 
-#%%-----------------------------------------------------------------------
-#%%-----------------------------------------------------------------------
+# Importing Models
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import MultinomialNB
 
-## Modelling
+# Importing Evaluation matrces
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import plot_confusion_matrix
+
+
+# check the performance on diffrent regressor
+models = []
+models.append(('XGBClassifier', XGBClassifier()))
+models.append(('LogisitcRegression', LogisticRegression()))
+models.append(('KNeighborsClassifier', KNeighborsClassifier()))
+models.append(('RandomForestClassifier', RandomForestClassifier()))
+models.append(('AdaBoostClassifier', AdaBoostClassifier()))
+models.append(('DecisionTreeClassifier', DecisionTreeClassifier()))
+
+
+# metrices to store performance
+acc = []
+pre = []
+f1 = []
+con = []
+rec = []
+
+
+import time
+i = 0
+for name,model in models:
+    i = i+1
+    start_time = time.time()
+    
+    # Fitting model to the Training set
+    clf = model
+    clf.fit(X_train, y_train)
+    
+    # predict values
+    y_pred = clf.predict(X_test)
+    
+    # Accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    acc.append(accuracy)
+    # Precision
+    precision = precision_score(y_test, y_pred, average=None)
+    pre.append(precision)
+    # Recall
+    recall = recall_score(y_test, y_pred, average=None)
+    rec.append(recall)
+    # F1 Score
+    f1_sco = f1_score(y_test, y_pred, average=None)
+    f1.append(f1_sco)
+    # Confusion Matrix
+    confusion_mat = confusion_matrix(y_test, y_pred)
+    con.append(confusion_mat)
+    # Report
+    report = classification_report(y_test, y_pred)
+
+
+    print("+","="*100,"+")
+    print('\033[1m' + f"\t\t\t{i}-For {name} the performance result is: " + '\033[0m')
+    print("+","="*100,"+")
+    print('Accuracy : ', accuracy)   
+    print("-"*50)
+    print('F1 : ', f1_sco)
+    print("-"*50)
+    print('Reacll : ', recall)
+    print("-"*50)
+    print('Precision : ', precision)
+    print("-"*50)
+    print('Confusion Matrix....\n', confusion_mat)
+    print("-"*50)
+    print('Classification Report....\n', report)
+    print("-"*50)
+    print('Plotting Confusion Matrix...\n')
+    plot_confusion_matrix(clf, X_test, y_test)
+    plt.show()
+
+
+    
+    print("\t\t\t\t\t\t\t-----------------------------------------------------------")
+    print(f"\t\t\t\t\t\t\t Time for detection ({name}) : {round((time.time() - start_time), 3)} seconds...")
+    print("\t\t\t\t\t\t\t-----------------------------------------------------------")
+    print()
+#%%-----------------------------------------------------------------------
+comp = pd.DataFrame({"Model": dict(models).keys(), "Accuracy": acc, "Precision": pre, "Recall": rec, "F1_Score": f1, "Confusion Matrix": con})
+comp
+#%%-----------------------------------------------------------------------
+#%%-------------------------------------------------------------------#%%---------------------------------------------------------------------------
+#%%-----------------------------------------------------------------------
+## Modelling2
 
 def create_model(clf, X_train,X_test, y_train, y_test, decision_tree =False ):
         
@@ -392,18 +497,18 @@ def create_model(clf, X_train,X_test, y_train, y_test, decision_tree =False ):
     recall_train = (recall_score(y_train, y_train_pred))        
     recall_test= (recall_score(y_test, y_test_pred))
     print()
-    print()
-    print(" F score on train set is:", f1_train )
+    print("+","="*100,"+")    
     print(" F score on test set is:", f1_test )
-    print()
+    print("-"*50)
     print(" Precision on train set is:", precision_train)
     print(" Precision on test set is:", precision_test)
-    print()
+    print("-"*50)
     print(" Recall on train set is:",  recall_train)
     print(" Recall on test set is:",  recall_test)
-    print()
+    print("-"*50)
     print(' Train ROC is:',roc_train) 
     print(' Test ROC is:', roc_test )
+    print("+","="*100,"+")  
 
  
     # plot no skill roc curve
@@ -465,14 +570,11 @@ create_model(XGBClassifier(random_state = 0), X_train_smote, X_test_final, y_tra
 #%%-----------------------------------------------------------------------
 
 ## Conclusion 1:
-
-#The train and test ROC looks pretty good. The  score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad. 
-
-#Age and smoking status contributes alot to the model you can see.
-
+print("+","="*100
+print('\033[1m' + f"\t\t\t\The train and test ROC looks pretty good. The score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad.#Age and smoking status contributes alot to the model you can see.
+" + '\033[0m')
+print("+","="*100,"+")
 #%%-----------------------------------------------------------------------
-
-# Backward stepwise Method:
 
 
 
