@@ -30,7 +30,7 @@ unloadPkg = function(pkg, character.only = FALSE) {
   while(search_item %in% search()) { detach(search_item, unload = TRUE, character.only = TRUE) } 
 }
 ```
-# %%%%%%%%%%%%% Machine Learning %%%%%%%%%%%%%%%%%%%%%%%%
+# %%%%%%%%%%%%% Data Mining & Machine Learning %%%%%%%%%%%%%%%%%%%%%%%%
 
 # Importing the required packages
 import pandas as pd
