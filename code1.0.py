@@ -38,10 +38,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import scipy.stats as ss
-import itertools
+import itertools #effiecient looping 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import StandardScaler #Standardization of datasets is a common requirement for many ML estimators
+from imblearn.over_sampling import SMOTE #SMOTE: Synthetic Minority Over-sampling Technique
 from collections import Counter
 from sklearn.linear_model import LogisticRegression
 from matplotlib import pyplot
@@ -104,7 +104,18 @@ df.drop("id", axis = 1, inplace = True)
 
 df.head()
 df.shape
+#%%-----------------------------------------------------------------------
+
 df.describe()
+
+>We can see the min age is 0.08 indicating an infant and a max of 82 yr old adult involved in this dataset. 
+
+>We see that mean of age is over 43yrs old, mean of glucose level falls on 106.14 with a bmi of mean 29.
+
+>Classification refers to a predictive modeling problem where a class label is predicted, here stoke.
+
+#%%-----------------------------------------------------------------------
+
 df.isnull().sum()
 #%%-----------------------------------------------------------------------
 # Lets check the distribution of bmi column
@@ -113,10 +124,13 @@ ax = sns.histplot(df["bmi"], kde = True,color='teal',edgecolor='black');
 ax.lines[0].set_color('crimson');
 plt.title("BMI Distrbution");
 
-#The peak lies around 30.
-#This is a right skewed plot.
-#mean > mode > median
-#Assumption: BMI is dependednt on gender and age, so lets fill the missing values for BMI on the basis of these
+> The peak lies around 30. 
+
+> This is a right skewed plot("positively skewed" distribution.) 
+
+> Mean > Median > Mode Therefore, here the value of mean is the most important.
+
+> ##Assumption: BMI is dependent on gender and age, so filling the missing values for BMI on the basis of these.
 #%%-----------------------------------------------------------------------
 # We would have to fill them with mean at gender and age
 df['bmi'] = df.groupby(['gender', 'age'])['bmi'].transform(
