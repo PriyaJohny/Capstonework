@@ -103,7 +103,10 @@ def cramers_corrected_stat_for_heatmap(confusion_matrix):
 df.drop("id", axis = 1, inplace = True)
 
 df.head()
+
 df.shape
+
+df.info()
 #%%-----------------------------------------------------------------------
 
 df.describe()
@@ -594,7 +597,10 @@ create_model(XGBClassifier(random_state = 0), X_train_smote, X_test_final, y_tra
 #%%-----------------------------------------------------------------------
 #%%-----------------------------------------------------------------------
 
-## Conclusion 1:
+##Observations:
+
+#%%-----------------------------------------------------------------------
+## Conclusion:
 print("+","="*100
 print('\033[1m' + f"\t\t\t\The train and test ROC looks pretty good. The score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad.#Age and smoking status contributes alot to the model you can see.
 " + '\033[0m')
