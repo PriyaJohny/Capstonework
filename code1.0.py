@@ -327,72 +327,17 @@ def checks_imbalance(df, y_col):
 
 checks_imbalance(df, "stroke")
 
-#%% md
+#%%-----------------------------------------------------------------------
+
 
 # Huge imbalance exists. We need to deal with this using some balancing technique.
 
+#%%-----------------------------------------------------------------------
 
 data = pd.get_dummies(df)
 
 #%%-----------------------------------------------------------------------
-
-
-y = data["stroke"]
-X = data[list(set(data.columns) - set(["stroke"]))]
-
-X_train, X_test, y_train, y_test = train_test_split(X, y,  test_size = 0.2)
-
-#%%-----------------------------------------------------------------------
-
-X_train.reset_index(drop = True, inplace = True)
-y_train.reset_index(drop = True, inplace = True)
-X_test.reset_index(drop = True, inplace = True)
-y_test.reset_index(drop = True, inplace = True)
-
-#%%-----------------------------------------------------------------------
-
-# Scaling the data, we need to fit and transform train data and just transfrom test data to avoid data leakage
-label_enc = StandardScaler()
-
-X_train_scaled_vals = label_enc.fit_transform(X_train[continuous_cols].values)
-
-X_train_scaled = pd.DataFrame(data = X_train_scaled_vals, columns = X_train[continuous_cols].columns)
-
-X_test_scaled_vals = label_enc.transform(X_test[continuous_cols].values)
-X_test_scaled = pd.DataFrame(data = X_test_scaled_vals, columns = X_test[continuous_cols].columns)
-
-X_train_cat = X_train[list(set(X_train.columns) - set(continuous_cols))]
-X_test_cat = X_test[list(set(X_train.columns) - set(continuous_cols))]
-
-#%%-----------------------------------------------------------------------
-
-X_train_final = pd.concat([X_train_scaled, X_train_cat], axis = 1)
-X_test_final = pd.concat([X_test_scaled, X_test_cat], axis = 1)
-
-#%%-----------------------------------------------------------------------
-
-print("Before balancing the data: ", Counter(y_train))
-
-#%%-----------------------------------------------------------------------
-
-# creating smotes object
-rs = SMOTE()
-# Applying smote to train data
-X_train_smote, y_train_smote = rs.fit_resample(X_train_final, y_train)
-
-
-#%%-----------------------------------------------------------------------
-
-print("After balancing the data: ", Counter(y_train_smote))
-
-#%%-----------------------------------------------------------------------
-X_train = X_train_smote
-X_test = X_test_final
-
-y_train = y_train_smote
-y_test = y_test
-#%%-----------------------------------------------------------------------
-#Now the data is prepared and we can move to training the model.
+## Modelling1
 
 # Importing Models
 from sklearn.linear_model import LogisticRegression
@@ -492,8 +437,67 @@ for name,model in models:
 comp = pd.DataFrame({"Model": dict(models).keys(), "Accuracy": acc, "Precision": pre, "Recall": rec, "F1_Score": f1, "Confusion Matrix": con})
 comp
 #%%-----------------------------------------------------------------------
-#%%-------------------------------------------------------------------#%%---------------------------------------------------------------------------
+
 #%%-----------------------------------------------------------------------
+
+#Test and Train dataset
+y = data["stroke"]
+X = data[list(set(data.columns) - set(["stroke"]))]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y,  test_size = 0.2)
+
+#%%-----------------------------------------------------------------------
+
+X_train.reset_index(drop = True, inplace = True)
+y_train.reset_index(drop = True, inplace = True)
+X_test.reset_index(drop = True, inplace = True)
+y_test.reset_index(drop = True, inplace = True)
+
+#%%-----------------------------------------------------------------------
+
+# Scaling the data, we need to fit and transform train data and just transfrom test data to avoid data leakage
+label_enc = StandardScaler()
+
+X_train_scaled_vals = label_enc.fit_transform(X_train[continuous_cols].values)
+
+X_train_scaled = pd.DataFrame(data = X_train_scaled_vals, columns = X_train[continuous_cols].columns)
+
+X_test_scaled_vals = label_enc.transform(X_test[continuous_cols].values)
+X_test_scaled = pd.DataFrame(data = X_test_scaled_vals, columns = X_test[continuous_cols].columns)
+
+X_train_cat = X_train[list(set(X_train.columns) - set(continuous_cols))]
+X_test_cat = X_test[list(set(X_train.columns) - set(continuous_cols))]
+
+#%%-----------------------------------------------------------------------
+
+X_train_final = pd.concat([X_train_scaled, X_train_cat], axis = 1)
+X_test_final = pd.concat([X_test_scaled, X_test_cat], axis = 1)
+
+#%%-----------------------------------------------------------------------
+
+print("Before balancing the data: ", Counter(y_train))
+
+#%%-----------------------------------------------------------------------
+
+# creating smotes object
+rs = SMOTE()
+# Applying smote to train data
+X_train_smote, y_train_smote = rs.fit_resample(X_train_final, y_train)
+
+
+#%%-----------------------------------------------------------------------
+
+print("After balancing the data: ", Counter(y_train_smote))
+
+#%%-----------------------------------------------------------------------
+X_train = X_train_smote
+X_test = X_test_final
+
+y_train = y_train_smote
+y_test = y_test
+#%%-----------------------------------------------------------------------
+#Now the data is prepared and we can move to training the model.
+#%%-------------------------------------------------------------------#%%---------------------------------------------------------------------------
 ## Modelling2
 
 def create_model(clf, X_train,X_test, y_train, y_test, decision_tree =False ):
