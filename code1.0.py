@@ -42,7 +42,7 @@ import itertools #effiecient looping
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler #Standardization of datasets is a common requirement for many ML estimators
 from imblearn.over_sampling import SMOTE #SMOTE: Synthetic Minority Over-sampling Technique
-from collections import Counter
+from collections import Counter #counting hashable object
 from sklearn.linear_model import LogisticRegression
 from matplotlib import pyplot
 from sklearn.preprocessing import StandardScaler
@@ -63,6 +63,15 @@ sns.set_theme(style="whitegrid")
 #Load Dataset
 df = pd.read_csv(r"C:\Users\ABC\Desktop\healthcare-dataset-stroke-data.csv")
 #%%-----------------------------------------------------------------------
+df.shape
+#%%-----------------------------------------------------------------------
+df.info()
+#%%-----------------------------------------------------------------------
+df.head()
+#%%-----------------------------------------------------------------------
+df.describe()
+#%%-----------------------------------------------------------------------
+
 #Important Functions
 def do_a_crosstab(col1, col2):
     plt.figure(figsize = (10, 11))
@@ -102,11 +111,6 @@ def cramers_corrected_stat_for_heatmap(confusion_matrix):
 
 df.drop("id", axis = 1, inplace = True)
 
-df.head()
-
-df.shape
-
-df.info()
 #%%-----------------------------------------------------------------------
 
 df.describe()
@@ -133,13 +137,14 @@ plt.title("BMI Distrbution");
 
 > Mean > Median > Mode Therefore, here the value of mean is the most important.
 
-> ##Assumption: BMI is dependent on gender and age, so filling the missing values for BMI on the basis of these.
+> #Assumption: BMI is dependent on gender and age, so filling the missing values for BMI on the basis of these.
 #%%-----------------------------------------------------------------------
 # We would have to fill them with mean at gender and age
 df['bmi'] = df.groupby(['gender', 'age'])['bmi'].transform(
     lambda group: group.fillna(np.mean(group))
 )
 df.isnull().sum()
+#%%-----------------------------------------------------------------------
 df[df['bmi'].isnull()]
 #Even after filling out the missing values with mean, 1 value still is empty. Which means for this age and gender no other value exists.
 #So lets just fill it on the basis of gender that seems more appropriate.
@@ -155,21 +160,20 @@ df.isnull().sum()
 sns.countplot(x=df["gender"],color='teal'  ,edgecolor='black')
 plt.title("Gender Vs Frequency count");
 #%%-----------------------------------------------------------------------
-
 sns.countplot(x=df["ever_married"],color='tab:olive'  ,edgecolor='black')
 plt.title("Married Vs Frequency count");
 
 # Married people nearly twice then unmarried people.
 
 #%%-----------------------------------------------------------------------
-sns.countplot(x=df["hypertension"],color='tab:orange'  ,edgecolor='black')
+sns.countplot(x=df["hypertension"],color='tab:orange', edgecolor='black')
 plt.title("Hypertension Vs Frequency count");
 
 #People having no hypertension is a lot more than the other class.
 
 #%%-----------------------------------------------------------------------
 
-sns.countplot(x=df["heart_disease"],color='yellow' ,edgecolor='black')
+sns.countplot(x=df["heart_disease"],color='yellow', edgecolor='black')
 plt.title("Heart Disease Vs Frequency count");
 
 #%%-----------------------------------------------------------------------
@@ -223,7 +227,7 @@ plt.title("People suffering from stroke, do they suffer from hypertension?");
 sns.countplot(x=df['stroke'], hue=df['heart_disease'],color='green',edgecolor='black');
 plt.title("People suffering from stroke, do they have prior heart disease?");
 
-# It can be observed people having prio heart disease suffered less from a heart stroke than those not having hypertension.
+# It can be observed people having prior heart disease suffered less from a heart stroke than those not having hypertension.
 
 #%%-----------------------------------------------------------------------
 
@@ -245,13 +249,12 @@ plt.title("What are the smoking patterns for married/unmarried people?");
 #A large chunk of married people have never smoked.
 
 #%%-----------------------------------------------------------------------
+## Correlation check on stroke
 #simple correlation with respect to stroke column
 print(corr["stroke"])
 
-sns.pairplot(df,hue='stroke',diag_kws={'bw':0.2} )
+sns.pairplot(df,hue='stroke',diag_kws={'bw':0.2} ).fig.suptitle("Stoke Pair Graph", y=1)
 #%%-----------------------------------------------------------------------
-
-
 ## Cramer V Correlation between Categorical Variables
 # Getting out the categorical variables
 categorical_cols = [col for col in df.columns if df[col].dtype == "object"]
@@ -272,7 +275,6 @@ for col1 in range(len(categorical_cols)):
 
 #%%-----------------------------------------------------------------------
 
-
 correlation_matrix = np.zeros((len(categorical_cols),len(categorical_cols)))
 
 for column1, column2 in itertools.combinations(categorical_cols, 2):
@@ -281,6 +283,10 @@ for column1, column2 in itertools.combinations(categorical_cols, 2):
     correlation_matrix[index2, index1] = correlation_matrix[index1, index2]
     
 corr = pd.DataFrame(correlation_matrix, index = categorical_cols, columns = categorical_cols)
+
+for col in ((corr.columns)):
+    corr.loc[col, col] = 1
+
 
 fig, ax = plt.subplots(figsize=(15, 12))
 
@@ -299,7 +305,7 @@ ax = sns.heatmap(df[continuous_cols].corr(), annot=True, ax=ax); ax.set_title("C
 #Nothing exceeds .70, so no point in dropping anything. As no strong correlation exists here.
 
 #%%-----------------------------------------------------------------------
-
+##Checks imbalance
 
 def checks_imbalance(df, y_col):
     df[y_col].value_counts().plot(kind = 'bar')
@@ -323,19 +329,13 @@ def checks_imbalance(df, y_col):
         print("Class", df[y_col].value_counts().index[1], "has more number of data-points. Total datapoints: ", df[y_col].value_counts()[1])
         return True
 
-    
-
 #%%-----------------------------------------------------------------------
-
 
 checks_imbalance(df, "stroke")
 
-#%%-----------------------------------------------------------------------
-
-
 # Huge imbalance exists. We need to deal with this using some balancing technique.
 
-#%%-----------------------------------------------------------------------
+#%%-----------------------------------------------------------------------X
 
 data = pd.get_dummies(df)
 
@@ -436,11 +436,10 @@ for name,model in models:
     print(f"\t\t\t\t\t\t\t Time for detection ({name}) : {round((time.time() - start_time), 3)} seconds...")
     print("\t\t\t\t\t\t\t-----------------------------------------------------------")
     print()
-#%%-----------------------------------------------------------------------
+
+    #%%-----------------------------------------------------------------------
 comp = pd.DataFrame({"Model": dict(models).keys(), "Accuracy": acc, "Precision": pre, "Recall": rec, "F1_Score": f1, "Confusion Matrix": con})
 comp
-#%%-----------------------------------------------------------------------
-
 #%%-----------------------------------------------------------------------
 
 #Test and Train dataset
@@ -602,7 +601,7 @@ create_model(XGBClassifier(random_state = 0), X_train_smote, X_test_final, y_tra
 #%%-----------------------------------------------------------------------
 ## Conclusion:
 print("+","="*100
-print('\033[1m' + f"\t\t\t\The train and test ROC looks pretty good. The score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad.#Age and smoking status contributes alot to the model you can see.
+print('\033[1m' + f"\t\t\t\The train and test ROC looks pretty good. The score would be low even though we have created synthetic data using SMOTE but still the event rate is pretty bad.#Age and smoking status contributes alot to the model you can see. We see that smoking seems to have the highest feature importance.
 " + '\033[0m')
 print("+","="*100,"+")
 #%%-----------------------------------------------------------------------
