@@ -1,5 +1,5 @@
-# George Washington Capstonework
 #Stroke Analysis through Vizualizations
+# George Washington Capstonework
 
 In various fields around the world, machine learning is used. There are no exceptions in the healthcare sector. Machine learning has a crucial role in diagnosing conditions including Stroke, high blood pressure, heart disease, and more. If foreseen far in advance, such information can offer intuitions essential to doctors, who can modify their diagnosis and approach per patient.
 
